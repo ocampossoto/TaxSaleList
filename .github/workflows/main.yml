@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: install
-        run: npm ci
+        run: npm install
         working-directory: scripts
       - name: run code
         run: node ./index.js
