@@ -29,7 +29,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: install
-        run: npm install
+        run: git config --global url."https://${{ secrets.GIT_TOKEN }}@github.com/".insteadOf ssh://git@github.com/ && npm install
         working-directory: scripts
       - name: run code
         run: node ./index.js
