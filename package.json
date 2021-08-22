@@ -1,0 +1,23 @@
+{
+  "name": "taxsalelisttracker",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ocampossoto/TaxSaleList.git"
+  },
+  "author": "Oscar Campos-Soto",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/ocampossoto/TaxSaleList/issues"
+  },
+  "homepage": "https://github.com/ocampossoto/TaxSaleList#readme",
+  "dependencies": {
+    "csv-parser": "^3.0.0",
+    "node-xlsx": "^0.16.1"
+  }
+}
