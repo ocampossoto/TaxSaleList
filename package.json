@@ -17,7 +17,7 @@
   "homepage": "https://github.com/ocampossoto/TaxSaleList#readme",
   "dependencies": {
     "csv-parser": "^3.0.0",
-    "node-xlsx": "^0.16.1"
+    "node-xlsx": "^0.17.1"
   },
   "directories": {
     "doc": "docs"
