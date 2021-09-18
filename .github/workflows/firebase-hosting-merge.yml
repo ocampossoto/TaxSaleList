@@ -18,3 +18,4 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_PERSONALPROJECTS_95BBE }}'
           channelId: live
           projectId: personalprojects-95bbe
+          entryPoint: "taxsalelist"
