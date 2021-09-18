@@ -1,67 +1,82 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid } from "@material-ui/core";
+import { Button, Grid, Typography } from "@material-ui/core";
 import React from "react";
-import HouseCard from './HouseCard';
-// import {
-//   BrowserRouter as Router,
-//   Switch,
-//   Route,
-//   Link
-// } from "react-router-dom";
-import MUIDataTable from "mui-datatables";
-const columns = ["Action #", "Starting Bid", "Address", "Type"];
+import parser from 'parse-address';
 function App() {
-  const [houses, setHouses] = React.useState([]);
-  const [selected, setSelected] = React.useState(null);
-  const [displayDialog, setDisplayDialog] = React.useState(false);
-  const options = {
-    filter: true,
-    filterType: "select",
-    responsive: "vertical",
-    selectableRows: "none",
-    print: false,
-    download: false,
-    expandableRows: false,
-    sortOrder: { name: "Starting Bid", direction: "desc" },
-    onRowClick: ((row) => {
-      setSelected(row);
-      setDisplayDialog(true);
-    })
-    // rowsSelected: value ===0? Default1: Default2,
-  }
-  const getHouseList = () => {
+  const [sortedData, setSortedData] = React.useState({});
+  React.useEffect(() => {
     fetch("https://ocampossoto.github.io/TaxSaleList/TaxSale349.json").then(res => {
       res.json().then(result => {
-        let data = [];
+        let tempSortedData = {};
         result.forEach(element => {
-          data.push([
-            element.actionNumber,
-            parseFloat(element.startingBid.replace("$ ", "")),
-            element.address,
-            element.type,
-            element.parcelS
-          ])
+          if (!sortCondition(element.type)) {
+            return;
+          }
+          let address = parser.parseAddress(element.address);
+          if (tempSortedData[address.zip] === undefined) {
+            tempSortedData[address.zip] = [];
+          }
+          tempSortedData[address.zip].push(element);
+          tempSortedData[address.zip].sort((a, b) => {
+            if (parseFloat(a.startingBid.replace("$ ", "")) < parseFloat(b.startingBid.replace("$ ", ""))) {
+              return -1
+            } else {
+              return 1;
+            }
+          });
         });
-        setHouses(data);
+        setSortedData(tempSortedData);
       })
     })
-  }
-  React.useEffect(() => {
-    getHouseList();
   }, [])
-  console.log(houses);
+  const sortCondition = (value) => {
+    if (value === "I") {
+      return true;
+    }
+    return false;
+  }
+  const getHouseButtons = (houseList) => {
+    let btnsData = [""];
+    let cnt = 0;
+    let addressCnt = 0;
+    for (let i = 0; i < houseList.length; i++) {
+      if (sortCondition(houseList[i].type)) {
+        if (addressCnt === 19) {
+          cnt++;
+          addressCnt = 0;
+          btnsData.push("");
+        }
+        btnsData[cnt] += houseList[i].address + "\n";
+        addressCnt++;
+      }
+    }
+    return btnsData.map((item, id) => <Button
+      variant="contained"
+      style={{ margin: "1%" }}
+      onClick={() => { navigator.clipboard.writeText(item) }} >
+      Copy set {id + 1}
+    </Button>
+    )
+
+  }
   return (
     <Grid container spacing={5} direction="row" justify="center" display="center">
-      {/* {houses?.map(house => {
-        return <Grid xl={5} lg={5} md={6} sm={10} xs={10}justify="center" display="center" item key={house.actionNumber}>
-          <HouseCard {...house} />
+      {Object.keys(sortedData).map((key) => {
+        let houseList = sortedData[key];
+        return <Grid item md={5}>
+          <Typography variant="h5">{key}</Typography>
+          {getHouseButtons(houseList)}
+          {houseList.map((house) => {
+            if (sortCondition(house.type)) {
+              return <Grid container>
+                <Grid item>
+                  <Typography><b>{house.actionNumber}</b>: {house.address} ({house.startingBid})</Typography>
+                </Grid>
+              </Grid>
+            }
+            else{ return null}
+          })}
         </Grid>
-      })} */}
-      <MUIDataTable
-        title={""}
-        data={houses}
-        columns={columns}
-        options={options}
-      />
+      })}
     </Grid>
   );
 }
