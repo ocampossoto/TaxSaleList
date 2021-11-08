@@ -76,8 +76,8 @@ const convertToCSV = () => {
 }
 
 
-const downloadFile = () => {
-    const file = fs.createWriteStream(location + "TaxSale349.xls");
+const downloadFile = (listName) => {
+    const file = fs.createWriteStream(location + listName);
     http.get("http://maps.wycokck.org/gisdata/taxsale/TaxSale349.xls", function (response) {
         response.pipe(file);
         file.on('finish', function () {
@@ -89,4 +89,5 @@ const downloadFile = () => {
     });
 }
 
-downloadFile();
+downloadFile("TaxSale349.xls");
+downloadFile("TaxSale350.xls");
