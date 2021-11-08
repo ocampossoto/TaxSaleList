@@ -78,7 +78,7 @@ const convertToCSV = () => {
 
 const downloadFile = (listName) => {
     const file = fs.createWriteStream(location + listName);
-    http.get("http://maps.wycokck.org/gisdata/taxsale/TaxSale349.xls", function (response) {
+    http.get("http://maps.wycokck.org/gisdata/taxsale/"+listName, function (response) {
         response.pipe(file);
         file.on('finish', function () {
             file.close(convertToCSV);  // close() is async, call cb after close completes.
